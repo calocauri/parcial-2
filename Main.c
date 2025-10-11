@@ -58,7 +58,7 @@ void agregar_nodo_pos(node *n, int pos)
 {
      if (pos < 1) // Error si la posición es 0 o negativo
      {
-          printf("Err: La posición debe de ser <= 1");
+          printf("Err: La posición debe de ser <= 1\n");
           return;
      }
      else if (pos == 1) // Agregar a la cabeza si es la primera posición
@@ -76,7 +76,7 @@ void agregar_nodo_pos(node *n, int pos)
                {
                     if (i < pos - 1) // Si la posicón es mayor al total de nodos
                     {
-                         printf("Err: La posición es mayor a la cantidad de nodos");
+                         printf("Err: La posición es mayor a la cantidad de nodos\n");
                     }
                     else // Agregar a la cola si es la última posición
                     {
@@ -121,7 +121,7 @@ void borrar_nodo_val(int val)
 {
      if (!cola && !cabeza) // Si la cola y la cabeza no apuntan a ningun nodo
      {
-          printf("La lista ya está vacía");
+          printf("La lista ya está vacía\n");
           return;
      }
      // Se desplaza por la lista hasta encontrar el nodo con el valor
@@ -135,7 +135,7 @@ void borrar_nodo_val(int val)
           }
           temp = temp->sig;
      }
-     printf("No existe un nodo con ese valor");
+     printf("No existe un nodo con ese valor\n");
      return;
 }
 
@@ -147,7 +147,7 @@ void borrar_nodo_pos(int pos)
      {
           if (temp->sig == NULL && i < pos - 1)
           {
-               printf("Err: La posición es mayor a la cantidad de nodos");
+               printf("Err: La posición es mayor a la cantidad de nodos\n");
                return;
           }
           temp = temp->sig;
