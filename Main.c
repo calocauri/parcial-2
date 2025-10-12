@@ -1,8 +1,26 @@
 #include<stdio.h>
 #include<stdlib.h>
 
+typedef struct Node {
+     int value;
+     struct Node* next;
+     struct Node* prev;
+} Node;
+
+Node* head = NULL;
+Node* tail = NULL;
+
+Node* create_Node(int val)
+{
+    Node *newNode = (Node*)malloc(sizeof(Node));
+    newNode->value = val;
+    newNode->prev = NULL;
+    newNode->next = NULL;
+    return newNode;
+}
+
 //lista ligada simple/singly linked list, datos ligados por su direccion
-typedef struct Node
+/*typedef struct Node
 {
     int value;
     struct Node *next;
@@ -82,4 +100,4 @@ void delete_Node()
     penultimo->next = NULL;
     free(temp);
     printf("Ultimo elemento borrado\n");
-}
+}*/
