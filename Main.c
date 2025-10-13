@@ -107,7 +107,6 @@ void liberarLista() {
     printf("Memoria liberada.\n");
 }
 
-// Ejemplo de uso
 int main() {
     insertarInicio(10);
     insertarInicio(20);
