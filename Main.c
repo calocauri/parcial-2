@@ -45,7 +45,7 @@ int main()
     printList(list);
     printf("nodo con valor: %d \n", find_Node(list, 12)->value);
     add_Node_after_another(list, create_Node(5));
-    delete_Node(list); 
+    delete_Node(&list, find_Node(list, 12)); 
     printList(list);
 
     free_list(list);
@@ -83,28 +83,21 @@ void try_add_Node(Node* n, Node* into) //tail and for first node
         try_add_Node(n, into->next);
     }
 }
-void delete_Node()
+void delete_Node(Node **head, Node *remove)
 {
-
-    if(list == NULL){
-        printf("No hay elementos en la lista");
+    if (*head == remove){
+        *head = remove->next;
         return;
+    } else {
+        Node* temp = *head;
+        while(temp != NULL && temp->next != remove){
+            temp = temp->next;
+        }
+        if (temp == NULL) return;
+        temp->next = remove->next;
+        remove->next=NULL;
     }
-    if(list->next == NULL){
-        printf("Elemento unico");
-        Node *temp = list;
-        list = NULL;
-        free(temp);
-        return;
-    }
-    Node *penultimo = list;
-    while(penultimo->next->next){
-        penultimo = penultimo->next;
-    }
-    Node *temp = penultimo->next;
-    penultimo->next = NULL;
-    free(temp);
-    printf("Ultimo elemento borrado\n");
+    return;
 }
 Node *find_Node(Node *head, int val)
 {
