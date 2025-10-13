@@ -42,6 +42,7 @@ int main()
     return 0;
 }
 
+//function def
 Node* create_Node(int val)
 {
     Node *newNode = (Node*)malloc(sizeof(Node));
@@ -53,7 +54,6 @@ Node* create_Node(int val)
     newNode->next = NULL;
     return newNode;
 }
-
 void add_Node_at_head(Node **head, Node **tail, Node *n)
 {
     if (*head == NULL) {
@@ -65,7 +65,6 @@ void add_Node_at_head(Node **head, Node **tail, Node *n)
         *head = n;
     }
 }
-
 void add_Node_after(Node *ref_Node, Node* newNode, Node** tail)
 {
     if (ref_Node == NULL || newNode == NULL) return;
@@ -81,7 +80,6 @@ void add_Node_after(Node *ref_Node, Node* newNode, Node** tail)
     
     ref_Node->next = newNode;
 }
-
 void add_Node_at_tail(Node* n, Node** head, Node** tail)
 {
     if (*head == NULL) {
@@ -98,7 +96,6 @@ void add_Node_at_tail(Node* n, Node** head, Node** tail)
     n->prev = temp;
     *tail = n;
 }
-
 void delete_Node(Node **head, Node **tail, Node *remove)
 {
     if (*head == NULL || remove == NULL) return;
@@ -121,7 +118,6 @@ void delete_Node(Node **head, Node **tail, Node *remove)
     }
     free(remove);
 }
-
 void printList(Node *head)
 {
     Node *temp = head;
@@ -131,7 +127,6 @@ void printList(Node *head)
     }
     printf("NULL\n");
 }
-
 void free_list(Node* li)
 {
     while(li){
