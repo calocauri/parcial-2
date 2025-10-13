@@ -21,15 +21,9 @@ void free_list(Node* li);
 
 int main()
 {
-    Node* n1 = create_Node(10);
-    add_Node_at_tail(n1, &head, &tail);
-    
-    Node* n2 = create_Node(11);
-    add_Node_at_tail(n2, &head, &tail);
-    
-    Node* n3 = create_Node(12);
-    add_Node_at_tail(n3, &head, &tail);
-    
+    add_Node_at_tail(create_Node(10), &head, &tail);
+    add_Node_at_tail(create_Node(11), &head, &tail);
+    add_Node_at_tail(create_Node(12), &head, &tail);
     printList(head);
 
     add_Node_after(head, create_Node(5), &tail);
