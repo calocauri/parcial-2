@@ -22,16 +22,25 @@ void free_list(Node* li);
 
 int main()
 {
+    printf("Crear y agregar nodos a una lista\n");
     add_Node_at_tail(create_Node(10), &head, &tail);
     add_Node_at_tail(create_Node(11), &head, &tail);
     add_Node_at_tail(create_Node(12), &head, &tail);
     printListFromHead(head);
 
-    add_Node_after(head, create_Node(5), &tail);
+    printf("Agregar un nodo al principio\n");
+    add_Node_at_head(&head, &tail, create_Node(4));
     printListFromHead(head);
-
+    printf("Agregar un nodo en medio\n");
+    add_Node_after(head->next, create_Node(5), &tail);
+    printListFromHead(head);
+    printf("Agregar un nodo al final\n");
+    add_Node_at_tail(create_Node(6), &head, &tail);
+    printListFromHead(head);
+    printf("Borrar un nodo\n");
     delete_Node(&head, &tail, head->next->next); 
     printListFromHead(head);
+    printf("Lista de atras para adelante\n");
     printListFromTail(tail);
 
     free_list(head);
