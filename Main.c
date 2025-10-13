@@ -6,6 +6,7 @@ typedef struct Nodo {
     struct Nodo* anterior;
 } Nodo;
 
+
 Nodo* cabeza = NULL;
 Nodo* cola = NULL;
 
