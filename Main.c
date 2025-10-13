@@ -16,7 +16,8 @@ void add_Node_at_head(Node **head, Node **tail, Node *n);
 void add_Node_after(Node *ref_Node, Node* newNode, Node** tail);
 void add_Node_at_tail(Node* n, Node** head, Node** tail);
 void delete_Node(Node **head, Node **tail, Node *remove);
-void printList(Node *head);
+void printListFromHead(Node *head);
+void printListFromTail(Node *tail);
 void free_list(Node* li);
 
 int main()
@@ -24,13 +25,14 @@ int main()
     add_Node_at_tail(create_Node(10), &head, &tail);
     add_Node_at_tail(create_Node(11), &head, &tail);
     add_Node_at_tail(create_Node(12), &head, &tail);
-    printList(head);
+    printListFromHead(head);
 
     add_Node_after(head, create_Node(5), &tail);
-    printList(head);
+    printListFromHead(head);
 
     delete_Node(&head, &tail, head->next->next); 
-    printList(head);
+    printListFromHead(head);
+    printListFromTail(tail);
 
     free_list(head);
     return 0;
@@ -112,12 +114,27 @@ void delete_Node(Node **head, Node **tail, Node *remove)
     }
     free(remove);
 }
-void printList(Node *head)
+void printListFromHead(Node *head)
 {
     Node *temp = head;
     while(temp != NULL){
         printf("%d - ", temp->value);
         temp = temp->next;
+    }
+    printf("NULL\n");
+}
+void printListFromTail(Node* head)
+{
+    Node* temp = head;
+    if (temp == NULL) {
+        return;
+    }
+    while (temp->next != NULL) {
+        temp = temp->next;
+    }
+    while (temp != NULL) {
+        printf("%d - ", temp->value);
+        temp = temp->prev;
     }
     printf("NULL\n");
 }
