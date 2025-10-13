@@ -1,7 +1,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 
-/*typedef struct Node {
+typedef struct Node {
      int value;
      struct Node* next;
      struct Node* prev;
@@ -10,17 +10,138 @@
 Node* head = NULL;
 Node* tail = NULL;
 
+//declare functions
+Node* create_Node(int val);
+void add_Node_at_head(Node **head, Node **tail, Node *n);
+void add_Node_after(Node *ref_Node, Node* newNode, Node** tail);
+void add_Node_at_tail(Node* n, Node** head, Node** tail);
+void delete_Node(Node **head, Node **tail, Node *remove);
+void printList(Node *head);
+void free_list(Node* li);
+
+int main()
+{
+    Node* n1 = create_Node(10);
+    add_Node_at_tail(n1, &head, &tail);
+    
+    Node* n2 = create_Node(11);
+    add_Node_at_tail(n2, &head, &tail);
+    
+    Node* n3 = create_Node(12);
+    add_Node_at_tail(n3, &head, &tail);
+    
+    printList(head);
+
+    add_Node_after(head, create_Node(5), &tail);
+    printList(head);
+
+    delete_Node(&head, &tail, head->next->next); 
+    printList(head);
+
+    free_list(head);
+    return 0;
+}
+
 Node* create_Node(int val)
 {
     Node *newNode = (Node*)malloc(sizeof(Node));
+    if(newNode == NULL) {
+        return NULL;
+    }
     newNode->value = val;
     newNode->prev = NULL;
     newNode->next = NULL;
     return newNode;
-}*/
+}
 
+void add_Node_at_head(Node **head, Node **tail, Node *n)
+{
+    if (*head == NULL) {
+        *head = n;
+        *tail = n;
+    } else {
+        n->next = *head;
+        (*head)->prev = n;
+        *head = n;
+    }
+}
+
+void add_Node_after(Node *ref_Node, Node* newNode, Node** tail)
+{
+    if (ref_Node == NULL || newNode == NULL) return;
+    
+    newNode->next = ref_Node->next;
+    newNode->prev = ref_Node;
+    
+    if (ref_Node->next != NULL) {
+        ref_Node->next->prev = newNode;
+    } else {
+        *tail = newNode;
+    }
+    
+    ref_Node->next = newNode;
+}
+
+void add_Node_at_tail(Node* n, Node** head, Node** tail)
+{
+    if (*head == NULL) {
+        *head = n;
+        *tail = n;
+        return;
+    }
+    
+    Node* temp = *head;
+    while(temp->next != NULL){
+        temp = temp->next;
+    }
+    temp->next = n;
+    n->prev = temp;
+    *tail = n;
+}
+
+void delete_Node(Node **head, Node **tail, Node *remove)
+{
+    if (*head == NULL || remove == NULL) return;
+
+    if (*head == remove) {
+        *head = remove->next;
+        if (*head != NULL) {
+            (*head)->prev = NULL;
+        } else {
+            *tail = NULL;
+        }
+    } else {
+        if (remove == *tail) {
+            *tail = remove->prev;
+        }
+        remove->prev->next = remove->next;
+        if (remove->next != NULL) {
+            remove->next->prev = remove->prev;
+        }
+    }
+    free(remove);
+}
+
+void printList(Node *head)
+{
+    Node *temp = head;
+    while(temp != NULL){
+        printf("%d - ", temp->value);
+        temp = temp->next;
+    }
+    printf("NULL\n");
+}
+
+void free_list(Node* li)
+{
+    while(li){
+        Node* temp = li;
+        li = li->next;
+        free(temp);
+    }
+}
 //lista ligada simple/singly linked list, datos ligados por su direccion
-typedef struct Node
+/*typedef struct Node
 {
     int value;
     struct Node *next;
@@ -72,8 +193,8 @@ void *add_Node_after_another(Node *ref_Node, Node* newNode)
 }
 void try_add_Node(Node* n, Node* into) //tail and for first node
 {
-    if(list == NULL){
-        list = n;
+    if(into == NULL){
+        into = n;
         return;
     }
     if(into->next == NULL){
@@ -96,6 +217,7 @@ void delete_Node(Node **head, Node *remove)
         if (temp == NULL) return;
         temp->next = remove->next;
         remove->next=NULL;
+        free(temp);
     }
     return;
 }
@@ -124,4 +246,4 @@ void free_list(Node* li)
         li = li->next;
         free(temp);
     }
-}
+}*/
