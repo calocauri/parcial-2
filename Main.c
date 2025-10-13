@@ -8,15 +8,11 @@ typedef struct Nodo {
     struct Nodo* anterior;
 } Nodo;
 
-// Punteros globales a cabeza y cola
-Nodo* cabeza = NULL;
-Nodo* cola = NULL;
-
-// Crear un nuevo nodo
-Nodo* crearNodo(int valor) {
+// Crear nodo
+Nodo* create_Node(int valor) {
     Nodo* nuevo = (Nodo*)malloc(sizeof(Nodo));
     if (!nuevo) {
-        printf("Error al asignar memoria\n");
+        printf("Error al asignar memoria.\n");
         exit(1);
     }
     nuevo->dato = valor;
@@ -25,46 +21,66 @@ Nodo* crearNodo(int valor) {
     return nuevo;
 }
 
-// Insertar al inicio
-void insertarInicio(int valor) {
-    Nodo* nuevo = crearNodo(valor);
-    if (cabeza == NULL) {
-        cabeza = cola = nuevo;
+// Agregar nodo al final
+void add_Node_at_tail(Nodo* nuevo, Nodo** head, Nodo** tail) {
+    if (*head == NULL) {
+        *head = *tail = nuevo;
     } else {
-        nuevo->siguiente = cabeza;
-        cabeza->anterior = nuevo;
-        cabeza = nuevo;
+        (*tail)->siguiente = nuevo;
+        nuevo->anterior = *tail;
+        *tail = nuevo;
     }
 }
 
-// Insertar al final
-void insertarFinal(int valor) {
-    Nodo* nuevo = crearNodo(valor);
-    if (cola == NULL) {
-        cabeza = cola = nuevo;
+// Agregar nodo al inicio
+void add_Node_at_head(Nodo** head, Nodo** tail, Nodo* nuevo) {
+    if (*head == NULL) {
+        *head = *tail = nuevo;
     } else {
-        cola->siguiente = nuevo;
-        nuevo->anterior = cola;
-        cola = nuevo;
+        nuevo->siguiente = *head;
+        (*head)->anterior = nuevo;
+        *head = nuevo;
     }
+}
+
+// Agregar nodo después de un nodo dado
+void add_Node_after(Nodo* nodoPrevio, Nodo* nuevo, Nodo** tail) {
+    if (nodoPrevio == NULL) {
+        printf("El nodo previo no puede ser NULL.\n");
+        return;
+    }
+    nuevo->siguiente = nodoPrevio->siguiente;
+    nuevo->anterior = nodoPrevio;
+    nodoPrevio->siguiente = nuevo;
+    if (nuevo->siguiente != NULL)
+        nuevo->siguiente->anterior = nuevo;
+    else
+        *tail = nuevo; // si se insertó al final, actualiza la cola
+}
+
+// Eliminar un nodo por puntero
+void delete_Node(Nodo** head, Nodo** tail, Nodo* eliminar) {
+    if (eliminar == NULL) return;
+
+    if (eliminar->anterior != NULL)
+        eliminar->anterior->siguiente = eliminar->siguiente;
+    else
+        *head = eliminar->siguiente; // era la cabeza
+
+    if (eliminar->siguiente != NULL)
+        eliminar->siguiente->anterior = eliminar->anterior;
+    else
+        *tail = eliminar->anterior; // era la cola
+
+    free(eliminar);
 }
 
 // Eliminar por valor
-void eliminarValor(int valor) {
-    Nodo* actual = cabeza;
+void delete_by_value(Nodo** head, Nodo** tail, int valor) {
+    Nodo* actual = *head;
     while (actual != NULL) {
         if (actual->dato == valor) {
-            if (actual->anterior != NULL)
-                actual->anterior->siguiente = actual->siguiente;
-            else
-                cabeza = actual->siguiente; // era la cabeza
-
-            if (actual->siguiente != NULL)
-                actual->siguiente->anterior = actual->anterior;
-            else
-                cola = actual->anterior; // era la cola
-
-            free(actual);
+            delete_Node(head, tail, actual);
             printf("Nodo con valor %d eliminado.\n", valor);
             return;
         }
@@ -73,54 +89,67 @@ void eliminarValor(int valor) {
     printf("Valor %d no encontrado.\n", valor);
 }
 
-// Recorrer hacia adelante
-void recorrerAdelante() {
-    Nodo* actual = cabeza;
-    printf("Lista hacia adelante: ");
-    while (actual != NULL) {
-        printf("%d ", actual->dato);
-        actual = actual->siguiente;
+// Imprimir lista desde la cabeza
+void printListFromHead(Nodo* head) {
+    Nodo* temp = head;
+    printf("Lista de inicio a fin: ");
+    while (temp != NULL) {
+        printf("%d ", temp->dato);
+        temp = temp->siguiente;
     }
     printf("\n");
 }
 
-// Recorrer hacia atrás
-void recorrerAtras() {
-    Nodo* actual = cola;
-    printf("Lista hacia atrás: ");
-    while (actual != NULL) {
-        printf("%d ", actual->dato);
-        actual = actual->anterior;
+// Imprimir lista desde la cola
+void printListFromTail(Nodo* tail) {
+    Nodo* temp = tail;
+    printf("Lista de fin a inicio: ");
+    while (temp != NULL) {
+        printf("%d ", temp->dato);
+        temp = temp->anterior;
     }
     printf("\n");
 }
 
-// Liberar toda la memoria
-void liberarLista() {
-    Nodo* actual = cabeza;
-    while (actual != NULL) {
-        Nodo* temp = actual;
-        actual = actual->siguiente;
+// Liberar memoria de toda la lista
+void free_list(Nodo* head) {
+    Nodo* temp;
+    while (head != NULL) {
+        temp = head;
+        head = head->siguiente;
         free(temp);
     }
-    cabeza = cola = NULL;
-    printf("Memoria liberada.\n");
+    printf("Memoria liberada correctamente.\n");
 }
 
 int main() {
-    insertarInicio(10);
-    insertarInicio(20);
-    insertarFinal(5);
-    insertarFinal(15);
+    Nodo* head = NULL;
+    Nodo* tail = NULL;
 
-    recorrerAdelante();
-    recorrerAtras();
+    printf("=== Crear y agregar nodos a la lista ===\n");
+    add_Node_at_tail(create_Node(10), &head, &tail);
+    add_Node_at_tail(create_Node(11), &head, &tail);
+    add_Node_at_tail(create_Node(12), &head, &tail);
+    printListFromHead(head);
 
-    eliminarValor(20);
-    recorrerAdelante();
+    printf("\n=== Agregar un nodo al principio ===\n");
+    add_Node_at_head(&head, &tail, create_Node(4));
+    printListFromHead(head);
 
-    eliminarValor(100); // valor no existente
+    printf("\n=== Agregar un nodo en medio (después del segundo nodo) ===\n");
+    add_Node_after(head->siguiente, create_Node(5), &tail);
+    printListFromHead(head);
 
-    liberarLista();
+    printf("\n=== Agregar un nodo al final ===\n");
+    add_Node_at_tail(create_Node(6), &head, &tail);
+    printListFromHead(head);
+
+    printf("\n=== Borrar un nodo ===\n");
+    delete_Node(&head, &tail, head->siguiente->siguiente); 
+    printListFromHead(head);
+    printf("\n=== Lista de atras para adelante ===\n");
+    printListFromTail(tail);
+
+    free_list(head);
     return 0;
 }
