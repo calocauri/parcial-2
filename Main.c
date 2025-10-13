@@ -28,8 +28,11 @@ typedef struct Node
 
 //declarando funciones de lista ligada simple
 Node* create_Node(int val);
+Node *add_Node_at_head(Node **head, Node *n);
+void *add_Node_after_another(Node *ref_Node, Node* newNode);
 void try_add_Node(Node* n, Node* into);
 void delete_Node();
+Node *find_Node(Node *head, int val);
 void printList(Node *head);
 void free_list(Node* li);
 Node *list = NULL;
@@ -40,6 +43,8 @@ int main()
     try_add_Node(create_Node(11), list);
     try_add_Node(create_Node(12), list);
     printList(list);
+    printf("nodo con valor: %d \n", find_Node(list, 12)->value);
+    add_Node_after_another(list, create_Node(5));
     delete_Node(list); 
     printList(list);
 
@@ -54,7 +59,18 @@ Node* create_Node(int val)
     newNode->next = NULL;
     return newNode;
 }
-void try_add_Node(Node* n, Node* into)
+Node *add_Node_at_head(Node **head, Node *n)
+{
+    n->next = *head;
+    *head = n;
+    return n;
+}
+void *add_Node_after_another(Node *ref_Node, Node* newNode)
+{
+    newNode->next = ref_Node->next;
+    ref_Node->next = newNode;
+}
+void try_add_Node(Node* n, Node* into) //tail and for first node
 {
     if(list == NULL){
         list = n;
@@ -89,6 +105,15 @@ void delete_Node()
     penultimo->next = NULL;
     free(temp);
     printf("Ultimo elemento borrado\n");
+}
+Node *find_Node(Node *head, int val)
+{
+    Node *temp = head;
+    while(temp != NULL){
+        if(temp->value == val) return temp;
+        temp = temp->next;
+    }
+    return NULL;
 }
 void printList(Node *head)
 {
