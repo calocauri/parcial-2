@@ -1,22 +1,33 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// Estructura del nodo doblemente ligado
+// Lista doblemente ligada, cada nodo apunta al anterior y al siguiente
 typedef struct Nodo {
-    int dato;
-    struct Nodo* siguiente;
-    struct Nodo* anterior;
+    int dato;              
+    struct Nodo* siguiente; 
+    struct Nodo* anterior;  
 } Nodo;
 
-// Punteros globales a la cabeza y cola
+// punteros al inicio y al final de la lista
 Nodo* cabeza = NULL;
 Nodo* cola = NULL;
 
-// Crear un nuevo nodo
+// Recorrer la lista de fin a inicio
+void recorrerAtras() {
+    Nodo* actual = cola;
+    printf("Lista al revés: ");
+    while (actual != NULL) {
+        printf("%d ", actual->dato);
+        actual = actual->anterior;
+    }
+    printf("\n");
+}
+
+// Crear un nodo nuevo con valor dado
 Nodo* crearNodo(int valor) {
     Nodo* nuevo = (Nodo*) malloc(sizeof(Nodo));
-    if (nuevo == NULL) {
-        printf("Error al asignar memoria.\n");
+    if (!nuevo) {
+        printf("Error de memoria :(\n");
         exit(1);
     }
     nuevo->dato = valor;
@@ -25,11 +36,10 @@ Nodo* crearNodo(int valor) {
     return nuevo;
 }
 
-// Insertar nodo al final
+// Insertar nodo al final de la lista
 void insertarAlFinal(int valor) {
     Nodo* nuevo = crearNodo(valor);
-
-    if (cabeza == NULL) {
+    if (!cabeza) { 
         cabeza = nuevo;
         cola = nuevo;
     } else {
@@ -39,35 +49,21 @@ void insertarAlFinal(int valor) {
     }
 }
 
-// Insertar nodo al inicio
-void insertarAlInicio(int valor) {
-    Nodo* nuevo = crearNodo(valor);
-
-    if (cabeza == NULL) {
-        cabeza = nuevo;
-        cola = nuevo;
-    } else {
-        nuevo->siguiente = cabeza;
-        cabeza->anterior = nuevo;
-        cabeza = nuevo;
-    }
-}
-
-// Insertar en una posición específica (0 = inicio)
+// Insertar nodo en posición específica (0 = inicio)
 void insertarEnPosicion(int valor, int posicion) {
-    if (posicion <= 0 || cabeza == NULL) {
+    if (!cabeza || posicion <= 0) {
         insertarAlInicio(valor);
         return;
     }
 
     Nodo* actual = cabeza;
     int i = 0;
-    while (actual->siguiente != NULL && i < posicion - 1) {
+    while (actual->siguiente && i < posicion - 1) {
         actual = actual->siguiente;
         i++;
     }
 
-    if (actual->siguiente == NULL) {
+    if (!actual->siguiente) {
         insertarAlFinal(valor);
     } else {
         Nodo* nuevo = crearNodo(valor);
@@ -78,16 +74,28 @@ void insertarEnPosicion(int valor, int posicion) {
     }
 }
 
+// Insertar nodo al inicio
+void insertarAlInicio(int valor) {
+    Nodo* nuevo = crearNodo(valor);
+    if (!cabeza) {
+        cabeza = cola = nuevo;
+    } else {
+        nuevo->siguiente = cabeza;
+        cabeza->anterior = nuevo;
+        cabeza = nuevo;
+    }
+}
+
 // Eliminar nodo por valor
 void eliminarPorValor(int valor) {
     Nodo* actual = cabeza;
 
-    while (actual != NULL && actual->dato != valor) {
+    while (actual && actual->dato != valor) {
         actual = actual->siguiente;
     }
 
-    if (actual == NULL) {
-        printf("Valor %d no encontrado.\n", valor);
+    if (!actual) {
+        printf("No encontré el valor %d :(\n", valor);
         return;
     }
 
@@ -105,50 +113,39 @@ void eliminarPorValor(int valor) {
     }
 
     free(actual);
-    printf("Nodo con valor %d eliminado.\n", valor);
+    printf("Se borró %d de la lista\n", valor);
 }
 
-// Recorrer lista hacia adelante
+// Mostrar la lista hacia adelante
 void recorrerAdelante() {
     Nodo* actual = cabeza;
-    printf("Lista hacia adelante: ");
-    while (actual != NULL) {
+    printf("Lista de inicio a fin: ");
+    while (actual) {
         printf("%d ", actual->dato);
         actual = actual->siguiente;
     }
     printf("\n");
 }
 
-// Recorrer lista hacia atrás
-void recorrerAtras() {
-    Nodo* actual = cola;
-    printf("Lista hacia atrás: ");
-    while (actual != NULL) {
-        printf("%d ", actual->dato);
-        actual = actual->anterior;
-    }
-    printf("\n");
-}
-
-// Liberar toda la memoria
+// Limpiar toda la lista y liberar memoria
 void liberarLista() {
     Nodo* actual = cabeza;
-    while (actual != NULL) {
+    while (actual) {
         Nodo* siguiente = actual->siguiente;
         free(actual);
         actual = siguiente;
     }
     cabeza = NULL;
     cola = NULL;
-    printf("Memoria liberada correctamente.\n");
+    printf("Lista borrada, memoria libre 👍\n");
 }
 
-// Ejemplo de uso
+// probando todo
 int main() {
     insertarAlFinal(10);
     insertarAlFinal(20);
     insertarAlInicio(5);
-    insertarEnPosicion(15, 2); // inserta 15 en la posición 2
+    insertarEnPosicion(15, 2); 
 
     recorrerAdelante();
     recorrerAtras();
