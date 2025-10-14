@@ -1,136 +1,85 @@
-#include <iostream>
+#include<stdio.h>
+#include<stdlib.h>
 
+//lista ligada simple/singly linked list, datos ligados por su direccion
+typedef struct Node
+{
+    int value;
+    struct Node *next;
+} Node;
 
+//declarando funciones de lista ligada simple
+Node* create_Node(int val);
+void try_add_Node(Node* n, Node* into);
+void free_list(Node* li);
+void delete_Node();
+Node *list = NULL;
 
-typedef struct Nodo {
-    int dato;
-    struct Nodo* siguiente;
-    struct Nodo* anterior;
-} Nodo;
+int main()
+{
+    try_add_Node(create_Node(10), list);
+    try_add_Node(create_Node(11), list);
+    try_add_Node(create_Node(12), list);
+    printf("Node0: %d \n", list->value);
+    printf("Node1: %d \n", list->next->value);
+    printf("Node2: %d \n", list->next->next->value);
+    delete_Node(list); 
+    printf("Node0: %d \n", list->value);
+    printf("Node1: %d \n", list->next->value);
+    //printf("Node2: %d \n", list->next->next->value);
 
-Nodo* cabeza = NULL;
-Nodo* cola = NULL;
-
-
-Nodo* crearNodo(int valor) {
-    Nodo* nuevo = new Nodo;
-    nuevo->dato = valor;
-    nuevo->siguiente = NULL;
-    nuevo->anterior = NULL;
-    return nuevo;
+    free_list(list);
+    return 0;
 }
-
-
-void insertarAlFinal(int valor) {
-    Nodo* nuevo = crearNodo(valor);
-
-    if (cabeza == NULL) {
-       
-        cabeza = nuevo;
-        cola = nuevo;
-    } else {
-        
-        cola->siguiente = nuevo;
-        nuevo->anterior = cola;
-        cola = nuevo;
-    }
+//definiendo funciones
+Node* create_Node(int val)
+{
+    Node newNode = (Node)malloc(sizeof(Node));
+    newNode->value = val;
+    newNode->next = NULL;
+    return newNode;
 }
-
-
-void insertarAlInicio(int valor) {
-    Nodo* nuevo = crearNodo(valor);
-
-    if (cabeza == NULL) {
-        
-        cabeza = nuevo;
-        cola = nuevo;
-    } else {
-        
-        nuevo->siguiente = cabeza;
-        cabeza->anterior = nuevo;
-        cabeza = nuevo;
-    }
-}
-
-
-void recorrerAdelante() {
-    Nodo* actual = cabeza;
-    cout << "Lista hacia adelante: ";
-    while (actual != NULL) {
-        cout << actual->dato << " ";
-        actual = actual->siguiente;
-    }
-    cout << endl;
-}
-
-
-void recorrerAtras() {
-    Nodo* actual = cola;
-    cout << "Lista hacia atrás: ";
-    while (actual != NULL) {
-        cout << actual->dato << " ";
-        actual = actual->anterior;
-    }
-    cout << endl;
-}
-
-void eliminarNodo(int valor) {
-    Nodo* actual = cabeza;
-
-    while (actual != NULL && actual->dato != valor) {
-        actual = actual->siguiente;
-    }
-
-    if (actual == NULL) {
-        cout << "Valor no encontrado.\n";
+void try_add_Node(Node* n, Node* into)
+{
+    if(list == NULL){
+        list = n;
         return;
     }
-
-    
-    if (actual == cabeza) {
-        
-        cabeza = actual->siguiente;
-        if (cabeza != NULL)
-            cabeza->anterior = NULL;
-    } else if (actual == cola) {
-        
-        cola = actual->anterior;
-        if (cola != NULL)
-            cola->siguiente = NULL;
-    } else {
-        
-        actual->anterior->siguiente = actual->siguiente;
-        actual->siguiente->anterior = actual->anterior;
+    if(into->next == NULL){
+        into->next = n;
     }
-
-    delete actual;
-}
-
-
-void liberarLista() {
-    Nodo* actual = cabeza;
-    while (actual != NULL) {
-        Nodo* siguiente = actual->siguiente;
-        delete actual;
-        actual = siguiente;
+    else{
+        try_add_Node(n, into->next);
     }
-    cabeza = NULL;
-    cola = NULL;
 }
+void free_list(Node* li)
+{
+    while(li){
+        Node* temp = li;
+        li = li->next;
+        free(temp);
+    }
+}
+void delete_Node()
+{
 
-
-int main() {
-    insertarAlFinal(10);
-    insertarAlFinal(20);
-    insertarAlInicio(5);
-    insertarAlFinal(30);
-
-    recorrerAdelante();
-    recorrerAtras();
-
-    eliminarNodo(20);
-    recorrerAdelante();
-
-    liberarLista();
-    return 0;
+    if(list == NULL){
+        printf("No hay elementos en la lista");
+        return;
+    }
+    if(list->next == NULL){
+        printf("Elemento unico");
+        Node *temp = list;
+        list = NULL;
+        free(temp);
+        return;
+    }
+    Node *penultimo = list;
+    while(penultimo->next->next){
+        penultimo = penultimo->next;
+    }
+    Node *temp = penultimo->next;
+    penultimo->next = NULL;
+    free(temp);
+    printf("Ultimo elemento borrado\n");
 }
